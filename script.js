@@ -109,8 +109,8 @@ function intersectionObject(a, b) { // a: selection  b:element
 
     if (result )
     {
-         console.log("S left : "+ a.offset().left+ " right : "+(a.offset().left+a.width()));
-         console.log("E left : "+ b.offset().left+ " right : "+b.width());
+     //    console.log("S left : "+ a.offset().left+ " right : "+(a.offset().left+a.width()));
+      //   console.log("E left : "+ b.offset().left+ " right : "+b.width());
          //console.log(b.width());
     }
 
@@ -211,6 +211,9 @@ function zoomOnElementsSelected()
         
 
      representeHours("abscisseHoursId",hoursSelected,'hour',maxH,true);
+     filterNoneSelectedLimitElements(preCheckinSelectedValues);
+     filterNoneSelectedLimitElements(transitTimeSelectedValues);
+     filterNoneSelectedLimitElements(nbDepartureSelectedValues);
      representeElements("preCheckinId",preCheckinSelectedValues,'precheckinClass',maxH,true);
      representeElements("transitTimeId",transitTimeSelectedValues,'tempstransitClass',maxH,true);
      representeElements("nbDepartsId",nbDepartureSelectedValues,'nbdepartsClass',maxH,true);
@@ -250,25 +253,32 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
 
                  decale=Math.floor(widthTotal*firstElement.value/maxHour)
 
-                 if(index==0)
+              /*   if(index==0)
                  {
                     left = Math.floor(widthTotal*elt.value/maxHour)-decale
+                     $("#"+elt.id).css({
+                        'left': left
+                    });   
                  }
                     
                  else
-                 {  
+                 {  */
                     beforeH=getBeforeHour(elt)
-                    console.log(elt);
-                    console.log("before: "+JSON.stringify(beforeH));
-                    left = $('#'+beforeH.id).position().left + Math.floor(widthTotal*(elt.value-beforeH.value)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
-                   // console.log(Math.floor(decale*elt.value/lastElement.value));
-                  
-                 }
-
-
-                 $("#"+elt.id).css({
+                   // console.log(elt);
+                   console.log("before: "+JSON.stringify(beforeH));
+                   if(beforeH)
+                   {
+                     left = $('#'+beforeH.id).position().left + Math.floor(widthTotal*(elt.value-beforeH.value)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
+                   
+                     $("#"+elt.id).css({
                         'left': left
-                    });    
+                    });   
+                   }                    
+                   // console.log(Math.floor(decale*elt.value/lastElement.value));
+                // }
+
+
+                 
 
             });
         }
@@ -276,20 +286,36 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
    
 function getBeforeHour(elt)
 {
-    var bhr=0;
-    console.log("Heure selectionnées : "+JSON.stringify(hoursSelected))
+    var bhr=null;
+   // console.log("Heure selectionnées : "+JSON.stringify(hoursSelected))
     for (var i = 0; i < hoursSelected.length; i++) {
-        if (hoursSelected[i].value==elt.value)
-        {
-            bhr=hoursSelected[i];
-            break;
-        }
+        
        if (hoursSelected[i].value>elt.value){
             bhr=hoursSelected[i-1];
+          //  console.log(bhr);
             break;
        }
     }
+
+    if (hoursSelected[hoursSelected.length-1].value==elt.value)
+        {
+            bhr=hoursSelected[hoursSelected.length-1];
+        }
+
     return bhr
+}
+function filterNoneSelectedLimitElements(list)
+{
+    for (var i = 0; i < list.length; i++) {
+        
+       if ( (list[i].value<hoursSelected[0].value) || (list[i].value>hoursSelected[hoursSelected.length-1].value) )
+       {
+          list.splice(i, 1);
+       }
+    }
+
+    console.log("selected: "+JSON.stringify(list));
+
 }
 function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
 {
