@@ -4408,7 +4408,6 @@ input[type="datetime"] {
   height: 30px;
   font-size: 8px;
   text-align: center;
-  background-color: #4fc281;
 }
 .tempstransitClass{
   position: absolute;
@@ -4416,7 +4415,6 @@ input[type="datetime"] {
   height: 30px;
   font-size: 8px;
   text-align: center;
-  background-color: #4fc281;
 }
 .nbdepartsClass{
   position: absolute;
@@ -4424,7 +4422,6 @@ input[type="datetime"] {
   height: 30px;
   font-size: 8px;
   text-align: center;
-  background-color: #4fc281;
 }
 
 .replay-progress {

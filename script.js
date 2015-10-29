@@ -10,20 +10,23 @@ $(document).ready(function(){
             {id:'hh_19',value:19},{id:'hh_20',value:20},{id:'hh_21',value:21},
             {id:'hh_22',value:22},{id:'hh_23',value:23},{id:'hh_24',value:24}];
 
-    elements=[{id:'elem1',value:2.2},{id:'elem2',value:3},
-        {id:'elem3',value:4.3},{id:'elem4',value:9},{id:'elem5',value:11},{id:'elem6',value:15}];
+    preCheckinValues=[{id:'elem1',value:2.2,level:'low'},{id:'elem2',value:3,level:'high'},
+             {id:'elem3',value:4.3,level:'normal'},{id:'elem4',value:9,level:'info'},
+             {id:'elem5',value:11,level:'high'},{id:'elem6',value:15,level:'info'}];
 
-    elements2=[{id:'elem21',value:1.2},{id:'elem22',value:1.7},
-        {id:'elem23',value:3.3},{id:'elem24',value:12.5},{id:'elem25',value:19},{id:'elem26',value:21},{id:'elem27',value:23}];
+    transitTimeValues=[{id:'elem21',value:1.2,level:'high'},{id:'elem22',value:1.7,level:'normal'},
+              {id:'elem23',value:3.3,level:'low'},{id:'elem24',value:12.5,level:'normal'},
+              {id:'elem25',value:19,level:'high'},{id:'elem26',value:21,level:'info'},{id:'elem27',value:23,level:'low'}];
 
-    elements3=[{id:'elem31',value:5.2},{id:'elem32',value:7.7},
-        {id:'elem33',value:13.3},{id:'elem34',value:16},{id:'elem35',value:19.5},{id:'elem36',value:21.5}];
+    nbDepartureValues=[{id:'elem31',value:5.2,level:'normal'},{id:'elem32',value:7.7,level:'info'},
+              {id:'elem33',value:13.3,level:'high'},{id:'elem34',value:16,level:'normal'},
+              {id:'elem35',value:19.5,level:'low'},{id:'elem36',value:21.5,level:'high'}];
 
     
-    heuresSelectionnes=[];
-    elementsSelectionnes=[];
-    elements2Selectionnes=[];
-    elements3Selectionnes=[];
+    hoursSelected=[];
+    preCheckinSelectedValues=[];
+    transitTimeSelectedValues=[];
+    nbDepartureSelectedValues=[];
 
 
      firstElement = 0
@@ -123,11 +126,9 @@ function catchElements(classElem,saveElementSelectedMethod,completList,selectedL
         var bElem = $(this);
         var result = intersectionObject(aElemSpectre, bElem);
 
-        //console.log(bElem);
+       // console.log(selectedList);
 
-        if (result == true) {
-
-                //saveElementSelected(bElem);
+        if (result == true) {                
                 saveElement(bElem,completList,selectedList);
           
         }
@@ -139,10 +140,11 @@ function catchElements(classElem,saveElementSelectedMethod,completList,selectedL
 
 function selectionneElements(e) {
 
-    elementsSelectionnes=[];
-    elements2Selectionnes=[];
-    elements3Selectionnes=[];
-    heuresSelectionnes=[];
+    preCheckinSelectedValues=[];
+    transitTimeSelectedValues=[];
+    nbDepartureSelectedValues=[];
+
+    hoursSelected=[];
 
     
     $(document).unbind("mousemove", activeSelection);
@@ -151,11 +153,11 @@ function selectionneElements(e) {
     mnX = 5000;
     mxY = 0;
     mnY = 5000;
-    
-    catchElements("hour",saveElement,hours,heuresSelectionnes)
-    catchElements("precheckinClass",saveElement,elements,elementsSelectionnes)
-    catchElements("tempstransitClass",saveElement,elements2,elements2Selectionnes)
-    catchElements("nbdepartsClass",saveElement,elements3,elements3Selectionnes)
+
+    catchElements("hour",saveElement,hours,hoursSelected)
+    catchElements("precheckinClass",saveElement,preCheckinValues,preCheckinSelectedValues)
+    catchElements("tempstransitClass",saveElement,transitTimeValues,transitTimeSelectedValues)
+    catchElements("nbdepartsClass",saveElement,nbDepartureValues,nbDepartureSelectedValues)
 
     ///////////////////////////////////////////
     
@@ -185,44 +187,33 @@ function saveHoursSelected(elt){
         hours.forEach(function(elem,index) {
             if (elem.id==elt[0].id)
             {
-                heuresSelectionnes.push(elem);
+                hoursSelected.push(elem);
             }
         });
 
-   // console.log(heuresSelectionnes);
+   // console.log(hoursSelected);
 }
 
-function saveElementSelected(elt){
-
-        elements.forEach(function(elem,index) {
-            if (elem.id==elt[0].id)
-            {
-                elementsSelectionnes.push(elem);
-            }
-        });
-
-    //console.log(elementsSelectionnes);
-}
 function zoomOnElementsSelected()
 {
 
     var maxH = 24
 
      $(".precheckinClass").remove();
-     $(".tempstransitClass").remove();
+     $(".nbdepartsClass").remove();
      $(".tempstransitClass").remove();
      $(".hour").remove();
 
-     if (heuresSelectionnes.length>0)
+     if (hoursSelected.length>0)
          {
-            maxH = heuresSelectionnes[heuresSelectionnes.length-1].value;
+            maxH = hoursSelected[hoursSelected.length-1].value;
          }
         
 
-     representeHours("abscisseHoursId",heuresSelectionnes,'hour',maxH,true);
-     representeElements("preCheckinId",elementsSelectionnes,'precheckinClass',maxH,true);
-     representeElements("transitTimeId",elements2Selectionnes,'tempstransitClass',maxH,true);
-     representeElements("nbDepartsId",elements3Selectionnes,'nbdepartsClass',maxH,true);
+     representeHours("abscisseHoursId",hoursSelected,'hour',maxH,true);
+     representeElements("preCheckinId",preCheckinSelectedValues,'precheckinClass',maxH,true);
+     representeElements("transitTimeId",transitTimeSelectedValues,'tempstransitClass',maxH,true);
+     representeElements("nbDepartsId",nbDepartureSelectedValues,'nbdepartsClass',maxH,true);
 
      
 
@@ -233,19 +224,14 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
 {
      widthTotal =$("#abscisseHoursId").width();  
      
-        firstElement = heuresSelectionnes[0]
-        nbHours=heuresSelectionnes.length-1
-
-   
-
-     //console.log(firstElement)
-     //console.log(lastElement)
+        firstElement = hoursSelected[0]
+        nbHours=hoursSelected.length-1
     
         if(!zoomOn)
         {
              elts.forEach(function(elt, index){
                 
-                 $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+"'> </div>");            
+                 $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+" "+elt.level+"'> </div>");            
                     
                 left = Math.floor(widthTotal*elt.value/maxHour)
 
@@ -260,7 +246,7 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
         {
              elts.forEach(function(elt, index){
                 
-                 $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+"'> </div>");
+                 $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+" "+elt.level+"'> </div>");
 
                  decale=Math.floor(widthTotal*firstElement.value/maxHour)
 
@@ -272,8 +258,8 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
                  else
                  {  
                     beforeH=getBeforeHour(elt)
-                    //console.log(elt);
-                    //console.log("before: "+JSON.stringify(beforeH));
+                    console.log(elt);
+                    console.log("before: "+JSON.stringify(beforeH));
                     left = $('#'+beforeH.id).position().left + Math.floor(widthTotal*(elt.value-beforeH.value)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
                    // console.log(Math.floor(decale*elt.value/lastElement.value));
                   
@@ -291,14 +277,18 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
 function getBeforeHour(elt)
 {
     var bhr=0;
-    console.log("Heure selectionnées : "+JSON.stringify(heuresSelectionnes))
-    for (var i = 0; i < heuresSelectionnes.length; i++) {
-       if (heuresSelectionnes[i].value>elt.value){
-            bhr=heuresSelectionnes[i-1];
+    console.log("Heure selectionnées : "+JSON.stringify(hoursSelected))
+    for (var i = 0; i < hoursSelected.length; i++) {
+        if (hoursSelected[i].value==elt.value)
+        {
+            bhr=hoursSelected[i];
+            break;
+        }
+       if (hoursSelected[i].value>elt.value){
+            bhr=hoursSelected[i-1];
             break;
        }
     }
-    
     return bhr
 }
 function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
@@ -360,13 +350,13 @@ function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
 function initialize(){
 
     representeHours("abscisseHoursId",hours,'hour',24,false);
-    representeElements("preCheckinId",elements,'precheckinClass',24,false); 
-    representeElements("transitTimeId",elements2,'tempstransitClass',24,false);
-    representeElements("nbDepartsId",elements3,'nbdepartsClass',24,false);    
-    elementsSelectionnes=[];
-    elements2Selectionnes=[];
-    elements3Selectionnes=[];
-    heuresSelectionnes=[];
+    representeElements("preCheckinId",preCheckinValues,'precheckinClass',24,false); 
+    representeElements("transitTimeId",transitTimeValues,'tempstransitClass',24,false);
+    representeElements("nbDepartsId",nbDepartureValues,'nbdepartsClass',24,false);    
+    preCheckinSelectedValues=[];
+    transitTimeSelectedValues=[];
+    nbDepartureSelectedValues=[];
+    hoursSelected=[];
 }
 
 
