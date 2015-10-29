@@ -1,0 +1,82 @@
+﻿<!DOCTYPE HTML>
+<html lang="fr">
+    <head>
+        <meta charset="utF-8"/>
+        <title>Replay</title>
+        <link rel="stylesheet" href="styles.css">    
+        <script src="jquery-2.1.1.min.js"></script> 
+        <script src="script.js"></script>   
+
+
+    </head>
+        <body>          
+              <div class="row">
+                <div class="panel panel-default panel-replay-control">
+                    <header>
+                        <div class="panel-title">
+                            <i class="icon icon-history"></i>
+                            <span>Terminal FR - Replay</span>
+                        </div>
+                    </header>
+                    <content class="">
+                        <div class="replay-button">
+                            <button class="btn btn-default btn-sq" disabled>
+                                <i class="icon icon-step-backward"></i>
+                            </button>
+                            <button class="btn btn-default btn-sq">
+                                <i class="icon icon-play"></i>
+                            </button>
+                            <button class="btn btn-default btn-sq">
+                                <i class="icon icon-stop"></i>
+                            </button>
+                            <button class="btn btn-default btn-sq">
+                                <i class="icon icon-step-forward"></i>
+                            </button>
+                        </div>
+
+                        <input type="datetime" />
+
+                        <div class="replay-player">
+                            <ul class="replay-timeline-title">
+                                <li>hours</li>                                
+                                <li>Pre-checkin</li>
+                                <li>Temps de transit</li>
+                                <li class="replay-timeline-title">Nombre de départ</li>
+                            </ul>
+
+                            <ul class="replay-timeline-group" id="handledZone">
+                                <li class="replay-timeline" id="abscisseHoursId">
+                                </li>
+                                <li class="replay-timeline" id="preCheckinId">
+                                </li>
+                                <li class="replay-timeline" id="transitTimeId">
+                                   <!--  <div class="normal" style="left:10%;"></div>
+                                    <div class="low" style="left:15%;"></div>
+                                    <div class="high" style="left:35%;"></div>
+                                    <div class="low" style="left:38%;"></div>
+                                    <div class="normal" style="left:70%;"></div>
+                                    <div class="high" style="left:95%;"></div>
+                                    <div class="info" style="left:26%;"></div> -->
+                                </li>
+                                <li class="replay-timeline" id="nbDepartsId">
+                                    
+                                </li>
+                                <li class="replay-progress-bar">
+                                    <div class="replay-progress-shadow" style="width:100%;"></div>
+                                    <div class="replay-progress replay-progress-start" style="left:0%">
+                                        <span class="replay-time">00:00</span>
+                                    </div>
+                                    <div class="replay-progress replay-progress-end" style="left:100%">
+                                        <span class="replay-time">02:00</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <input type="datetime" />
+                    </content>
+                </div>
+                </div>
+               
+    </body>
+
+</html>
