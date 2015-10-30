@@ -31,18 +31,36 @@ $(document).ready(function(){
 
      firstElement = 0
      lastElement = 24
+
+     windowWidth = $(window).width();
+     repereO = $("#abscisseHoursId").offset().left;
+     repereWidth = $("#abscisseHoursId").width();  
     
 
    initialize();
 
 
-    
+
+$( window ).resize(function() 
+{
+    if (hoursSelected.length>0)
+    {
+        zoomOnElementsSelected();
+    }
+    else
+    {
+        initialize();
+    }
+});
 
 //handle mouse selection
   
 $("#handledZone").mousedown(function (e) {
        
         //console.log(e.pageX);
+
+         console.log("windowWidth :"+windowWidth)
+         console.log("repereO :"+repereO)
        
         $(".replay-progress-bar").addClass("spectre-active");
         $(".replay-progress-bar").css({
@@ -67,6 +85,13 @@ function activeSelection(e) {
     var w = Math.abs(initialW - e.pageX);
     var h = Math.abs(initialH - e.pageY);
 
+     repereO = $("#abscisseHoursId").offset().left;
+     repereWidth = $("#abscisseHoursId").width(); 
+
+     left = Math.floor(repereWidth*elt.value/maxHour)
+
+
+
     $(".replay-progress-bar").css({
         'width': w,
         'height': h
@@ -85,6 +110,14 @@ function activeSelection(e) {
             "top": e.pageY
         });
     }
+
+    detectHoursMouseMove(e);
+//replay-progress-end
+
+   // console.log($(".replay-progress-start .replay-time").html());
+   // console.log($(".replay-progress-end .replay-time").html());
+    
+
 }
 
 
@@ -135,6 +168,14 @@ function catchElements(classElem,saveElementSelectedMethod,completList,selectedL
     });
 
 
+}
+
+function detectHoursMouseMove(e)
+{
+     repereO = $("#abscisseHoursId").offset().left;
+     repereWidth = $("#abscisseHoursId").width(); 
+
+    console.log("x:"+e.pageX+" y:"+e.pageY)
 }
 
 
@@ -225,7 +266,7 @@ function zoomOnElementsSelected()
 
 function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
 {
-     widthTotal =$("#abscisseHoursId").width();  
+     
      
         firstElement = hoursSelected[0]
         nbHours=hoursSelected.length-1
@@ -236,7 +277,7 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
                 
                  $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+" "+elt.level+"'> </div>");            
                     
-                left = Math.floor(widthTotal*elt.value/maxHour)
+                left = Math.floor(repereWidth*elt.value/maxHour)
 
                  $("#"+elt.id).css({
                         'left': left
@@ -251,11 +292,11 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
                 
                  $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+" "+elt.level+"'> </div>");
 
-                 decale=Math.floor(widthTotal*firstElement.value/maxHour)
+                 decale=Math.floor(repereWidth*firstElement.value/maxHour)
 
               /*   if(index==0)
                  {
-                    left = Math.floor(widthTotal*elt.value/maxHour)-decale
+                    left = Math.floor(repereWidth*elt.value/maxHour)-decale
                      $("#"+elt.id).css({
                         'left': left
                     });   
@@ -268,7 +309,7 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
                    console.log("before: "+JSON.stringify(beforeH));
                    if(beforeH)
                    {
-                     left = $('#'+beforeH.id).position().left + Math.floor(widthTotal*(elt.value-beforeH.value)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
+                     left = $('#'+beforeH.id).position().left + Math.floor(repereWidth*(elt.value-beforeH.value)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
                    
                      $("#"+elt.id).css({
                         'left': left
@@ -319,7 +360,7 @@ function filterNoneSelectedLimitElements(list)
 }
 function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
 {
-    widthTotal =$("#abscisseHoursId").width();  
+    repereWidth =$("#abscisseHoursId").width();  
     firstElement = elts[0]
     lastElement = elts[elts.length-1]
     nbHours=elts.length-1
@@ -333,7 +374,7 @@ function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
                 
                  $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+"'>"+elt.value+" </div>");            
                     
-                left = Math.floor(widthTotal*elt.value/maxHour)
+                left = Math.floor(repereWidth*elt.value/maxHour)
 
                  $("#"+elt.id).css({
                         'left': left
@@ -348,17 +389,17 @@ function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
                 
                  $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+"'>"+elt.value+" </div>");
 
-                 decale=Math.floor(widthTotal*firstElement.value/maxHour)
+                 decale=Math.floor(repereWidth*firstElement.value/maxHour)
                  
                  if(index==0)
                  {
-                    left = Math.floor(widthTotal*elt.value/maxHour)-decale
+                    left = Math.floor(repereWidth*elt.value/maxHour)-decale
                     beforeVal = elt.value
                  }
                     
                  else
                  {  
-                    left = left + Math.floor(widthTotal*(elt.value-beforeVal)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
+                    left = left + Math.floor(repereWidth*(elt.value-beforeVal)/nbHours)//-decale+Math.floor(decale*elt.value/lastElement.value)
                    // console.log(Math.floor(decale*elt.value/lastElement.value));
                    beforeVal = elt.value
                    //console.log(left)
