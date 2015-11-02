@@ -1,14 +1,14 @@
 $(document).ready(function(){
 
 
-    hours= [{id:'hh_00',value:0},{id:'hh_01',value:1},{id:'hh_02',value:2},{id:'hh_03',value:3},
-            {id:'hh_04',value:4},{id:'hh_05',value:5},{id:'hh_06',value:6},
-            {id:'hh_07',value:7},{id:'hh_08',value:8},{id:'hh_09',value:9},
-            {id:'hh_10',value:10},{id:'hh_11',value:11},{id:'hh_12',value:12},
-            {id:'hh_13',value:13},{id:'hh_14',value:14},{id:'hh_15',value:15},
-            {id:'hh_16',value:16},{id:'hh_17',value:17},{id:'hh_18',value:18},
-            {id:'hh_19',value:19},{id:'hh_20',value:20},{id:'hh_21',value:21},
-            {id:'hh_22',value:22},{id:'hh_23',value:23},{id:'hh_24',value:24}];
+    hours= [{id:'hh_00',value:0,x:0},{id:'hh_01',value:1,x:0},{id:'hh_02',value:2,x:0},{id:'hh_03',value:3,x:0},
+            {id:'hh_04',value:4,x:0},{id:'hh_05',value:5,x:0},{id:'hh_06',value:6,x:0},
+            {id:'hh_07',value:7,x:0},{id:'hh_08',value:8,x:0},{id:'hh_09',value:9,x:0},
+            {id:'hh_10',value:10,x:0},{id:'hh_11',value:11,x:0},{id:'hh_12',value:12,x:0},
+            {id:'hh_13',value:13,x:0},{id:'hh_14',value:14,x:0},{id:'hh_15',value:15,x:0},
+            {id:'hh_16',value:16,x:0},{id:'hh_17',value:17,x:0},{id:'hh_18',value:18,x:0},
+            {id:'hh_19',value:19,x:0},{id:'hh_20',value:20,x:0},{id:'hh_21',value:21,x:0},
+            {id:'hh_22',value:22,x:0},{id:'hh_23',value:23,x:0},{id:'hh_24',value:24,x:0}];
 
     preCheckinValues=[{id:'elem1',value:2.2,level:'low'},{id:'elem2',value:3,level:'high'},
              {id:'elem3',value:4.3,level:'normal'},{id:'elem4',value:9,level:'info'},
@@ -35,6 +35,12 @@ $(document).ready(function(){
      windowWidth = $(window).width();
      repereO = $("#abscisseHoursId").offset().left;
      repereWidth = $("#abscisseHoursId").width();  
+     defaultSelectorWidth = 0; 
+
+     intervalSelInf=0;
+     intervalSelSup=10;
+
+     clickedPos = 0;
     
 
    initialize();
@@ -57,24 +63,28 @@ $( window ).resize(function()
   
 $("#handledZone").mousedown(function (e) {
        
-        //console.log(e.pageX);
+          
 
-         console.log("windowWidth :"+windowWidth)
-         console.log("repereO :"+repereO)
+          repereO = $("#abscisseHoursId").offset().left;
+          repereWidth = $("#abscisseHoursId").width(); 
+
+         // console.log("wd: "+ $(".replay-progress-shadow").width());
        
         $(".replay-progress-bar").addClass("spectre-active");
         $(".replay-progress-bar").css({
-            'left': e.pageX-280,
+            'left': e.pageX-repereO,
             'top': 0
         });
 
-        initialW = e.pageX-280;
+        initialW = e.pageX-repereO;
         initialH = 0;
         
              
 
         $(document).bind("mouseup", selectionneElements);
         $(document).bind("mousemove", activeSelection);
+
+        detectHourInfMouseDown(e);
 
     });
   
@@ -88,7 +98,7 @@ function activeSelection(e) {
      repereO = $("#abscisseHoursId").offset().left;
      repereWidth = $("#abscisseHoursId").width(); 
 
-     left = Math.floor(repereWidth*elt.value/maxHour)
+    // left = Math.floor(repereWidth*elt.value/maxHour)
 
 
 
@@ -111,7 +121,7 @@ function activeSelection(e) {
         });
     }
 
-    detectHoursMouseMove(e);
+    detectHourSupMouseMove(e);
 //replay-progress-end
 
    // console.log($(".replay-progress-start .replay-time").html());
@@ -170,13 +180,99 @@ function catchElements(classElem,saveElementSelectedMethod,completList,selectedL
 
 }
 
-function detectHoursMouseMove(e)
+function detectHourSupMouseMove(e)
 {
      repereO = $("#abscisseHoursId").offset().left;
      repereWidth = $("#abscisseHoursId").width(); 
+     if  (defaultSelectorWidth == 0)
+     {
+         defaultSelectorWidth = $(".replay-progress-shadow").width();
+     }
+     var repereF =repereO+repereWidth;
+     var x= e.pageX+defaultSelectorWidth;
+     var realPos;
 
-    console.log("x:"+e.pageX+" y:"+e.pageY)
+     if (x>=repereO && x<=repereF)
+     {
+        if (hoursSelected.length>0)
+        {
+            for (var i = 0; i < hoursSelected.length; i++)
+            {        
+                realPos=repereO+hoursSelected[i].x;
+                if (realPos>x)
+                {
+                    intervalSelSup=hoursSelected[i-1].value;
+                    console.log(defaultSelectorWidth);
+                     break;
+                 }
+            }
+        }
+        else
+        {
+             for (var i = 0; i < hours.length; i++)
+            {        
+                realPos=repereO+hours[i].x;
+                console.log("realPos: "+realPos);
+                if (realPos>x)
+                {
+                    intervalSelSup=hours[i-1].value;                   
+                     console.log(defaultSelectorWidth);
+                     break;
+                 }
+            }
+
+        }
+        
+     }
+
+    $(".replay-progress-end .replay-time").html(intervalSelSup);
+
+    console.log("x:"+e.pageX+" intS:"+intervalSelSup)
 }
+
+function detectHourInfMouseDown(e)
+{
+     repereO = $("#abscisseHoursId").offset().left;
+     repereWidth = $("#abscisseHoursId").width(); 
+     var x= e.pageX;
+     var realPos;
+     var repereF =repereO+repereWidth;
+
+     if (x>=repereO && x<=repereF)
+     {
+        if (hoursSelected.length>0)
+        {
+            for (var i = 0; i < hoursSelected.length; i++)
+            {        
+                realPos=repereO+hoursSelected[i].x;
+                if (realPos>x)
+                {
+                    intervalSelInf=hoursSelected[i].value;
+                 //  console.log(bhr);
+                     break;
+                 }
+            }
+        }
+        else
+        {
+             for (var i = 0; i < hours.length; i++)
+            {        
+                realPos=repereO+hours[i].x;
+                if (realPos>x)
+                {
+                    intervalSelInf=hours[i].value;
+                 //  console.log(bhr);
+                     break;
+                 }
+            }
+
+        }
+        
+     }
+
+    $(".replay-progress-start .replay-time").html(intervalSelInf);
+}
+
 
 
 function selectionneElements(e) {
@@ -275,7 +371,8 @@ function representeElements(abscisId,elts,classColor,maxHour,zoomOn)
         {
              elts.forEach(function(elt, index){
                 
-                 $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+" "+elt.level+"'> </div>");            
+                 $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+" "+elt.level+"'> </div>");   
+
                     
                 left = Math.floor(repereWidth*elt.value/maxHour)
 
@@ -345,6 +442,40 @@ function getBeforeHour(elt)
 
     return bhr
 }
+
+
+function getHourElt(hourVal)
+{
+   
+   var hrElt=null;
+
+   if (hoursSelected.length>0)
+   {
+    for (var i = 0; i < hoursSelected.length; i++) {
+        
+       if (hoursSelected[i].value==hourVal){
+            hrElt=hoursSelected[i];
+            break;
+       }
+    }
+   }
+   else
+   {
+    for (var i = 0; i < hours.length; i++)
+     {
+        
+           if (hours[i].value==hourVal)
+           {
+                hrElt=hours[i];
+                break;
+           }
+     }
+    }
+
+    return hrElt;
+}
+
+
 function filterNoneSelectedLimitElements(list)
 {
     for (var i = 0; i < list.length; i++) {
@@ -375,6 +506,7 @@ function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
                  $("#"+abscisId).append("<div id='"+elt.id+"' class='"+classColor+"'>"+elt.value+" </div>");            
                     
                 left = Math.floor(repereWidth*elt.value/maxHour)
+                elt.x=left;
 
                  $("#"+elt.id).css({
                         'left': left
@@ -405,7 +537,7 @@ function representeHours(abscisId,elts,classColor,maxHour,zoomOn)
                    //console.log(left)
                  }
 
-
+                 elt.x=left;
                  $("#"+elt.id).css({
                         'left': left
                     });    
@@ -424,6 +556,7 @@ function initialize(){
     transitTimeSelectedValues=[];
     nbDepartureSelectedValues=[];
     hoursSelected=[];
+    console.log(hours);
 }
 
 

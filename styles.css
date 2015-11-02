@@ -4386,6 +4386,7 @@ input[type="datetime"] {
   z-index: 9000;
   position: absolute !important;
   cursor: default !important;
+  width: 0px;
 }
 .spectre-active {
   display: block !important;
@@ -4442,6 +4443,7 @@ input[type="datetime"] {
   position: absolute;
   top: 0;
   height: 100%;
+  width: 0px;
   background: #4eb9c2;
   opacity: .4;
 }
