@@ -92,8 +92,10 @@ $("#handledZone").mousedown(function (e) {
 });
 
 function activeSelection(e) {
-    var w = Math.abs(initialW - e.pageX);
+    var w = Math.abs(initialW - e.pageX)-repereO;
     var h = Math.abs(initialH - e.pageY);
+    h=$(".replay-player").height();
+   
 
      repereO = $("#abscisseHoursId").offset().left;
      repereWidth = $("#abscisseHoursId").width(); 
