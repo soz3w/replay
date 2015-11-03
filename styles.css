@@ -4398,9 +4398,10 @@ input[type="datetime"] {
 
 .hour {
   position: absolute;
-  height: 4px;
+  height: 0px;
   font-size: 8px;
   text-align: center;
+  color:#efeff3;
 }
 
 .precheckinClass{
